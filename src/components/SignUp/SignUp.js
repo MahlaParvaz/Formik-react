@@ -1,10 +1,26 @@
 import { useFormik } from 'formik';
+// import { useState } from 'react';
 import * as Yup from 'yup';
+import Input from '../common/Input';
+import RadioInput from '../common/RadioInput';
+import SelectComponent from '../common/SelectComponent';
+const radioOptions = [
+  { label: 'male', value: '0' },
+  { label: 'female', value: '1' },
+];
+
+const selectOptions = [
+  { label: 'select nationality ...', value: '' },
+  { label: 'Iran', value: 'IR' },
+  { label: 'Germany', value: 'GER' },
+  { label: 'USA', value: 'US' },
+];
 const initialValues = {
   name: '',
   email: '',
   password: '',
   gender: '',
+  nationality: '',
 };
 const onSubmit = (values) => {
   console.log(values);
@@ -43,76 +59,50 @@ const validationSchema = Yup.object({
     .required('Password Coonfirmation is required')
     .oneOf([Yup.ref('password'), null], 'Passwords must match'),
   gender: Yup.string().required('Gender is required'),
+  nationality: Yup.string().required('Select Nationality'),
 });
 const SignUp = () => {
+  // const [formValues, setFormValues] = useState('');
   const formik = useFormik({
-    initialValues,
+    initialValues: initialValues,
     onSubmit,
     validate,
     validationSchema,
     validateOnMount: true,
+    enableReinitialize: true,
   });
   // console.log(formik.errors);
 
   return (
     <div>
       <form onSubmit={formik.handleSubmit}>
-        <div className="formControl">
-          <label>Name</label>
-          <input type="text" {...formik.getFieldProps('name')} name="name" />
-          {formik.errors.name && formik.touched.name && (
-            <div className="error">{formik.errors.name}</div>
-          )}
-        </div>
-        <div className="formControl">
-          <label>Email</label>
-          <input type="text" {...formik.getFieldProps('email')} name="email" />
-          {formik.errors.email && formik.touched.email && (
-            <div className="error">{formik.errors.email}</div>
-          )}
-        </div>
-        <div className="formControl">
-          <label>Password</label>
-          <input
-            type="password"
-            {...formik.getFieldProps('password')}
-            name="password"
-          />
-          {formik.errors.password && formik.touched.password && (
-            <div className="error">{formik.errors.password}</div>
-          )}
-        </div>
-        <div className="formControl">
-          <label>Password</label>
-          <input
-            type="password"
-            {...formik.getFieldProps('passwordConfirm')}
-            name="password"
-          />
-          {formik.errors.passwordConfirm && formik.touched.passwordConfirm && (
-            <div className="error">{formik.errors.passwordConfirm}</div>
-          )}
-        </div>
-        <div className="formControl">
-          <input
-            type="radio"
-            id="0"
-            value="0"
-            name="gender"
-            onChange={formik.handleChange}
-            checked={formik.values.gender === '0'}
-          />
-          <label htmlFor="0">Male</label>
-          <input
-            type="radio"
-            id="1"
-            value="1"
-            name="gender"
-            onChange={formik.handleChange}
-            checked={formik.values.gender === '1'}
-          />
-          <label htmlFor="1">Female</label>
-        </div>
+        <Input formik={formik} name="name" label="Name" />
+        <Input formik={formik} name="email" label="Email" />
+        <Input formik={formik} name="phoneNumber" label="Phone Number" />
+
+        <Input
+          formik={formik}
+          name="password"
+          label="Password"
+          type="password"
+        />
+        <Input
+          formik={formik}
+          name="passwordConfirm"
+          label="password Confirmation"
+          type="password"
+        />
+        <RadioInput
+          formik={formik}
+          name="gender"
+          radioOptions={radioOptions}
+          label="gender"
+        />
+        <SelectComponent
+          formik={formik}
+          selectOptions={selectOptions}
+          name="nationality"
+        />
         <button type="submit" disabled={!formik.isValid}>
           submit
         </button>
