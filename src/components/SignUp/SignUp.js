@@ -1,9 +1,16 @@
 import { useFormik } from 'formik';
 // import { useState } from 'react';
 import * as Yup from 'yup';
+import CheckBox from '../common/Checkox';
 import Input from '../common/Input';
 import RadioInput from '../common/RadioInput';
 import SelectComponent from '../common/SelectComponent';
+import Terms from '../common/Terms';
+const checkBoxOptions = [
+  { label: 'React.js', value: 'React.js' },
+  { label: 'Vue.js', value: 'Vue.js' },
+];
+
 const radioOptions = [
   { label: 'male', value: '0' },
   { label: 'female', value: '1' },
@@ -21,6 +28,7 @@ const initialValues = {
   password: '',
   gender: '',
   nationality: '',
+  intrests: [],
 };
 const onSubmit = (values) => {
   console.log(values);
@@ -60,6 +68,10 @@ const validationSchema = Yup.object({
     .oneOf([Yup.ref('password'), null], 'Passwords must match'),
   gender: Yup.string().required('Gender is required'),
   nationality: Yup.string().required('Select Nationality'),
+  intrests: Yup.array().min(1).required('at least select one '),
+  terms: Yup.boolean()
+    .required('The term and conditions must e accepted')
+    .oneOf([true], 'You need to accept the terms and conditions'),
 });
 const SignUp = () => {
   // const [formValues, setFormValues] = useState('');
@@ -103,6 +115,13 @@ const SignUp = () => {
           selectOptions={selectOptions}
           name="nationality"
         />
+        <CheckBox
+          formik={formik}
+          name="intrests"
+          checkBoxOptions={checkBoxOptions}
+          label="intrests"
+        />
+        <Terms formik={formik} name="terms" />
         <button type="submit" disabled={!formik.isValid}>
           submit
         </button>
